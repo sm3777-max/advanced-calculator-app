@@ -1,4 +1,6 @@
 # app/history.py
+import pandas as pd
+from decimal import Decimal
 from app.calculation import Calculation
 from app.calculator_memento import CalculatorMemento
 
@@ -26,15 +28,11 @@ class History:
 
     def undo(self):
         """Performs an undo operation."""
-        # We need at least two states in the stack to undo (the current and the one before it)
         if len(self._undo_stack) <= 1:
             print("Nothing to undo.")
             return
 
-        # Pop the current state and move it to the redo stack
         self._redo_stack.append(self._undo_stack.pop())
-        
-        # Restore to the previous state, which is now at the top of the undo stack
         self.restore_from_memento(self._undo_stack[-1])
         print("Last calculation undone.")
 
@@ -44,12 +42,46 @@ class History:
             print("Nothing to redo.")
             return
 
-        # Get the memento from the redo stack to restore
         memento_to_restore = self._redo_stack.pop()
-        
-        # Add this state back to the undo stack
         self._undo_stack.append(memento_to_restore)
-        
-        # Restore the state from the memento
         self.restore_from_memento(memento_to_restore)
         print("Last calculation redone.")
+
+    def save_history(self, file_path: str):
+        """Saves the current calculation history to a CSV file."""
+        if not self.calculations:
+            print("History is empty. Nothing to save.")
+            return
+        
+        history_list = [{
+            'operand_a': calc.a, 
+            'operand_b': calc.b, 
+            'operation': calc.operation, 
+            'result': calc.result
+        } for calc in self.calculations]
+        
+        df = pd.DataFrame(history_list)
+        df.to_csv(file_path, index=False)
+        print(f"History successfully saved to {file_path}")
+
+    def load_history(self, file_path: str):
+        """Loads calculation history from a CSV file."""
+        try:
+            df = pd.read_csv(file_path)
+            self.calculations.clear()
+            for index, row in df.iterrows():
+                calc = Calculation(
+                    Decimal(str(row['operand_a'])),
+                    Decimal(str(row['operand_b'])),
+                    row['operation'],
+                    Decimal(str(row['result']))
+                )
+                self.calculations.append(calc)
+            # After loading, save an initial state for undo/redo to work correctly
+            self._undo_stack = [self.create_memento()]
+            self._redo_stack.clear()
+            print(f"History successfully loaded from {file_path}")
+        except FileNotFoundError:
+            print(f"Error: No history file found at {file_path}")
+        except Exception as e:
+            print(f"An error occurred while loading history: {e}")

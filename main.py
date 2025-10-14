@@ -12,13 +12,11 @@ class App:
     def __init__(self):
         Config.load()
         self.calculator = Calculator()
-        # FIX: Renamed the attribute to avoid conflict with the 'history' method
         self.history_manager = History()
 
         log_file = Config.get("CALCULATOR_LOG_FILE", "calculator.log")
         history_file = Config.get("CALCULATOR_HISTORY_FILE", "history.csv")
         
-        # FIX: Updated the observer to use the new attribute name
         log_observer = LoggingObserver(log_file)
         save_observer = AutoSaveObserver(self.history_manager, history_file)
         self.calculator.attach(log_observer)
@@ -26,15 +24,12 @@ class App:
 
     @command("Displays this help message.")
     def help(self):
-        """Dynamically displays help for all registered commands."""
         print("Available commands:")
         for name, desc in COMMANDS.items():
             print(f"  {name}: {desc}")
 
     @command("Shows the calculation history.")
     def history(self):
-        """Displays all calculations in the current session."""
-        # FIX: Use the new attribute name here
         if not self.history_manager.calculations:
             print("History is empty.")
         for calc in self.history_manager.calculations:
@@ -42,18 +37,23 @@ class App:
 
     @command("Undoes the last calculation.")
     def undo(self):
-        """Undoes the most recent calculation."""
-        # FIX: Use the new attribute name here
         self.history_manager.undo()
 
     @command("Redoes the last undone calculation.")
     def redo(self):
-        """Redoes a calculation that was previously undone."""
-        # FIX: Use the new attribute name here
         self.history_manager.redo()
 
+    @command("Saves the current history to the configured CSV file.")
+    def save(self):
+        history_file = Config.get("CALCULATOR_HISTORY_FILE", "history.csv")
+        self.history_manager.save_history(history_file)
+
+    @command("Loads history from the configured CSV file.")
+    def load(self):
+        history_file = Config.get("CALCULATOR_HISTORY_FILE", "history.csv")
+        self.history_manager.load_history(history_file)
+
     def start(self):
-        """Starts the REPL loop."""
         print("Welcome to the Advanced Calculator!")
         self.help()
 
@@ -82,7 +82,6 @@ class App:
                     a, b = Decimal(val_a), Decimal(val_b)
                     
                     calculation = self.calculator.calculate(a, b, op_name)
-                    # FIX: Use the new attribute name here
                     self.history_manager.add_calculation(calculation)
                     print(f"Result: {calculation.result}")
 

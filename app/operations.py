@@ -35,9 +35,17 @@ class PowerOperation(Operation):
 
 class RootOperation(Operation):
     def execute(self, a, b):
+        # First, check for the invalid case: even root of a negative number
         if a < 0 and b % 2 == 0:
             raise OperationError("Cannot calculate an even root of a negative number.")
-        return a ** (1/b)
+        
+        # Handle the valid case for odd roots of negative numbers
+        if a < 0:
+            # Calculate the root of the absolute value, then re-apply the negative sign
+            return -(-a) ** (1 / b)
+        
+        # Handle all positive numbers normally
+        return a ** (1 / b)
 
 # --- Added Mandatory Operations ---
 
