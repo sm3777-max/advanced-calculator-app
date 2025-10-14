@@ -39,7 +39,31 @@ class RootOperation(Operation):
             raise OperationError("Cannot calculate an even root of a negative number.")
         return a ** (1/b)
 
-# Add other operation classes here (Modulus, etc.) if you have them
+# --- Added Mandatory Operations ---
+
+class ModulusOperation(Operation):
+    def execute(self, a, b):
+        if b == 0:
+            raise OperationError("Cannot perform modulus by zero.")
+        return a % b
+
+class IntegerDivisionOperation(Operation):
+    def execute(self, a, b):
+        if b == 0:
+            raise OperationError("Cannot perform integer division by zero.")
+        return a // b
+
+class PercentageOperation(Operation):
+    def execute(self, a, b):
+        if b == 0:
+            raise OperationError("Cannot calculate percentage with a zero denominator.")
+        return (a / b) * 100
+
+class AbsoluteDifferenceOperation(Operation):
+    def execute(self, a, b):
+        return abs(a - b)
+
+# --- End of Added Operations ---
 
 class OperationFactory:
     """A factory for creating operation instances."""
@@ -50,6 +74,11 @@ class OperationFactory:
         "divide": DivideOperation,
         "power": PowerOperation,
         "root": RootOperation,
+        # --- Registering new operations ---
+        "modulus": ModulusOperation,
+        "int_divide": IntegerDivisionOperation,
+        "percent": PercentageOperation,
+        "abs_diff": AbsoluteDifferenceOperation,
     }
 
     @staticmethod

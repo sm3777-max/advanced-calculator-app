@@ -57,3 +57,28 @@ def test_root_operation_invalid_input():
     # Test for even root of a negative number
     with pytest.raises(OperationError, match="Cannot calculate an even root of a negative number."):
         op.execute(Decimal('-4'), Decimal('2'))
+        # In tests/test_operations.py
+
+# ... (import the new classes at the top of the file)
+from app.operations import (
+    ModulusOperation,
+    IntegerDivisionOperation,
+    PercentageOperation,
+    AbsoluteDifferenceOperation,
+)
+
+def test_modulus_operation():
+    op = ModulusOperation()
+    assert op.execute(Decimal('10'), Decimal('3')) == Decimal('1')
+
+def test_integer_division_operation():
+    op = IntegerDivisionOperation()
+    assert op.execute(Decimal('10'), Decimal('3')) == Decimal('3')
+
+def test_percentage_operation():
+    op = PercentageOperation()
+    assert op.execute(Decimal('20'), Decimal('100')) == Decimal('20')
+
+def test_absolute_difference_operation():
+    op = AbsoluteDifferenceOperation()
+    assert op.execute(Decimal('5'), Decimal('15')) == Decimal('10')

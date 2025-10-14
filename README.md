@@ -3,7 +3,7 @@
 This project is a sophisticated command-line calculator built with Python. It supports a variety of arithmetic operations, features a robust REPL interface, and incorporates several software engineering best practices and design patterns.
 
 Key features include:
--   **Extended Arithmetic Operations:** Standard operations plus power, root, modulus, and more.
+-   **Extended Arithmetic Operations:** Standard operations plus power, root, modulus, integer division, percentage, and absolute difference.
 -   **Undo/Redo Functionality:** Manages session history using the Memento Design Pattern.
 -   **Automatic Logging & Saving:** Uses the Observer Design Pattern to log all calculations and auto-save history to a CSV file.
 -   **Dynamic Help Menu:** Employs the Decorator Design Pattern to automatically generate a help menu.
@@ -19,7 +19,7 @@ To get started with this project, clone the repository and set up the virtual en
 1.  **Clone the repository:**
     ```bash
     git clone <your-repository-url>
-    cd advanced-calculator-app
+    cd advanced-calculator
     ```
 
 2.  **Create and activate the virtual environment:**
